@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <locale.h>
+#include "string.h"
 
-#define CRC_INDEX_START		18 // размер массива символов
+#define CRC_INDEX_START	50	// максимально допустимая длина входного предложения
 
 char * s_gets (char * st, int n);
 
@@ -12,16 +13,17 @@ int main(void){
 	char rs_conf[CRC_INDEX_START];
 	int hh = 0;
 
-	puts("Введите текст для расчёта чек-суммы (q для выхода):");
+	puts("Введите текст для расчёта чек-суммы\r\nДля NMEA вводи без $ и *\r\n");
 	s_gets(rs_conf, CRC_INDEX_START);
 
 	while (rs_conf[0] != 'q'){
 
-		for(int i = 0; i < CRC_INDEX_START - 1; i++)		//считаем контрольную сумму (-1, т.к. посл символ это \0)
+		for(int i = 0; i < strlen(rs_conf); i++)
 			hh ^= rs_conf[i];
 
 		printf("%s - строка\r\n", rs_conf);
-		printf("%x - чексумма\r\n", hh);
+		// printf("%d - длина\r\n", strlen(rs_conf));
+		printf("%02X - чексумма\r\n\r\n", hh);
 
 		hh = 0;
 		for(int i = 0; i < CRC_INDEX_START; i++)
@@ -37,7 +39,6 @@ int main(void){
 char * s_gets (char *st, int n){
 
 	char *ret_val;
-	// int i = 0;
 	ret_val = fgets(st, n, stdin);
 
 	if (ret_val){
